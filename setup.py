@@ -8,4 +8,7 @@ setup(name='wikipeople',
       author_email='sam.van.stround@cern.com',
       license='MIT',
       packages=['wikipeople'],
+      install_requires=[
+          'requests',
+      ],
       zip_safe=False)
