@@ -1,5 +1,7 @@
 # wikipeople
 
+Use the [Wikidata API](https://www.wikidata.org/wiki/Wikidata:Data_access) to get information about people.
+
 ## Install
 ```sh
 pip install wikipeople
