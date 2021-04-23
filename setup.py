@@ -3,7 +3,7 @@ from setuptools import setup
 setup(name='wikipeople',
       version='0.1',
       description='Get information about people using wikidata',
-      url='http://github.com/svanstroud/wikipeople',
+      url='http://github.com/samvanstroud/wikipeople',
       author='Sam VS',
       author_email='sam.van.stround@cern.com',
       license='MIT',
@@ -11,4 +11,5 @@ setup(name='wikipeople',
       install_requires=[
           'requests',
       ],
+      python_requires='>=3.6',
       zip_safe=False)

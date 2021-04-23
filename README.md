@@ -1,6 +1,11 @@
 # wikipeople
 
+## Install
+```sh
+pip install wikipeople
+```
 
+## Examples
 Search for concept ID's given a string
 ```py
 >>> from wikipeople import wikipeople as wp
@@ -19,7 +24,7 @@ Basic info
 Get someone's date of birth
 ```py
 >>> wp.get_date_of_birth(wp.search_wikidata('Andy Murray'))
-
+'+1987-05-15'
 ```
 
 
