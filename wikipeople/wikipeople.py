@@ -168,12 +168,12 @@ def get_profession_hierarchy(castaway_concept_id):
 
   # while we didn't reach the top
   while True:
-    
+
     # get the parent profession of the current profession
     concept_id, label = get_parent_class(concept_id)
-    
+
     # if the parent is the person conept, we are done
-    if concept_id == person_concept_id:
+    if concept_id == person_concept_id or label == 'NA':
       break
 
     # otherwise store this profession and go again
