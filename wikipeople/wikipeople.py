@@ -44,10 +44,12 @@ def get_concept_id_from_url(url):
     res = list(res['query']['pages'].values())[0]
     
     # check result
-    if 'pageprops' not in res.keys():
-        raise Exception('Wikipedia concept ID lookup failed.')
+    try:
+      concept_id = res['pageprops']['wikibase_item']
+    except:
+      concept_id = 'NA'
 
-    return res['pageprops']['wikibase_item']
+    return concept_id
 
 
 def get_concept_label(concept_id):
@@ -59,8 +61,12 @@ def get_concept_label(concept_id):
   query += '&format=json&languages=en&props=labels'
 
   res = requests.get(query).json()
+  try:
+    label = res['entities'][concept_id]['labels']['en']['value']
+  except:
+    label = 'NA'
 
-  return res['entities'][concept_id]['labels']['en']['value']
+  return label
 
 
 def get_property(concept_id, property_id):
@@ -84,10 +90,12 @@ def get_property(concept_id, property_id):
     for prop in res['claims'][property_id]:
       concept_result = prop['mainsnak']['datavalue']['value']['id']
       break # just get the first result for now
-    
+  except:
+    concept_result = 'NA'
+
+  try:
     concept_label = get_concept_label(concept_result)
   except: 
-    concept_result = prop['mainsnak']['datavalue']['value']['id']
     concept_label = 'NA'
   
   return concept_result, concept_label
@@ -109,9 +117,12 @@ def get_date_of_birth(concept_id):
 
   res = requests.get(query).json()
 
-  for prop in res['claims'][property_id]:
-    concept_result = prop['mainsnak']['datavalue']['value']['time'].split('T')[0]
-    break
+  try:
+    for prop in res['claims'][property_id]:
+      concept_result = prop['mainsnak']['datavalue']['value']['time'].split('T')[0]
+      break
+  except:
+    concept_result = 'NA'
   
   return concept_result
 
@@ -129,11 +140,19 @@ def get_parent_class(profession_concept_id):
 
   res = requests.get(query).json()
 
-  for claim in res['claims'][property_id]:
-    parent_concept = claim['mainsnak']['datavalue']['value']['id']
-    break # just use the first result for now
+  try:
+    for claim in res['claims'][property_id]:
+      parent_concept = claim['mainsnak']['datavalue']['value']['id']
+      break # just use the first result for now
+  except:
+    parent_concept = 'NA'
 
-  return parent_concept, get_concept_label(parent_concept)
+  try:
+    parent_concept_label = get_concept_label(parent_concept)
+  except:
+    parent_concept_label = 'NA'
+
+  return parent_concept, parent_concept_label
 
 
 def get_profession_hierarchy(castaway_concept_id):
@@ -141,6 +160,8 @@ def get_profession_hierarchy(castaway_concept_id):
 
   # get the persons profession
   concept_id, label = get_property(castaway_concept_id, 'P106')
+  if concept_id == label == 'NA':
+    return []
 
   # store the first progression we get
   hierarchy = [label]
@@ -174,9 +195,17 @@ def get_country(place_concept_id):
 
   res = requests.get(query).json()
 
-  for claim in res['claims'][property_id]:
-    parent_concept = claim['mainsnak']['datavalue']['value']['id']
-    break # just use the first result for now
-
-  return parent_concept, get_concept_label(parent_concept)
+  try:
+    for claim in res['claims'][property_id]:
+      parent_concept = claim['mainsnak']['datavalue']['value']['id']
+      break # just use the first result for now
+  except:
+    parent_concept = 'NA'
   
+  try:
+    parent_concept_label = get_concept_label(parent_concept)
+  except:
+    parent_concept_label = 'NA'
+
+
+  return parent_concept, parent_concept_label
