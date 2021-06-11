@@ -25,6 +25,31 @@ def search_wikidata(string):
   return res['search'][0]['id']
 
 
+def get_concept_id_from_url(url):
+    """
+    Given a wikipedia URL, find the corresponding wikidata
+    concept ID for the page.
+    """
+    
+    # assume the page title follows the final slash (not always valid)
+    page_title = url.split('/')[-1]
+    
+    # setup query
+    query = 'https://en.wikipedia.org/w/api.php?action=query&prop=pageprops&titles='
+    query += page_title
+    query += '&format=json'
+    
+    # make the request
+    res = requests.get(query).json()
+    res = list(res['query']['pages'].values())[0]
+    
+    # check result
+    if 'pageprops' not in res.keys():
+        raise Exception('Wikipedia concept ID lookup failed.')
+
+    return res['pageprops']['wikibase_item']
+
+
 def get_concept_label(concept_id):
   """
   Given a concept ID, get the natural language label.
@@ -91,7 +116,6 @@ def get_date_of_birth(concept_id):
   return concept_result
 
 
-
 def get_parent_class(profession_concept_id):
   """
   Given a profession concept ID, find the parent profession.
@@ -110,7 +134,6 @@ def get_parent_class(profession_concept_id):
     break # just use the first result for now
 
   return parent_concept, get_concept_label(parent_concept)
-
 
 
 def get_profession_hierarchy(castaway_concept_id):
@@ -156,3 +179,4 @@ def get_country(place_concept_id):
     break # just use the first result for now
 
   return parent_concept, get_concept_label(parent_concept)
+  
